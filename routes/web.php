@@ -14,5 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'message' => 'E-commerce API Backend',
+        'version' => '1.0.0',
+        'documentation' => '/api/documentation',
+        'endpoints' => [
+            'categories' => '/api/v1/categories',
+            'products' => '/api/v1/products'
+        ]
+    ]);
+});
+
+// Route pour la documentation API
+Route::get('/api/documentation', function () {
+    return view('api-documentation');
 });
