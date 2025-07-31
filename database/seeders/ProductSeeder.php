@@ -143,7 +143,13 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
-            Product::create($productData);
+            // Génère le slug à partir du nom
+            $slug = Str::slug($productData['name']);
+
+            Product::firstOrCreate(
+                ['slug' => $slug], // Critère d’unicité
+                array_merge($productData, ['slug' => $slug])
+            );
         }
     }
 } 

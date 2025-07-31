@@ -1,11 +1,166 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-commerce Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Un système e-commerce complet développé avec Laravel 10, incluant une API REST et une interface web moderne.
+
+## 🚀 Fonctionnalités
+
+### ✅ Système d'authentification complet
+- **Inscription/Connexion** avec validation avancée
+- **Gestion de profil** utilisateur complète
+- **Changement de mot de passe** sécurisé
+- **API REST** avec authentification Sanctum
+- **Interface web** moderne et responsive
+
+### ✅ Gestion des produits et catégories
+- **CRUD complet** pour les produits et catégories
+- **Upload d'images** pour les produits
+- **Recherche et filtrage** avancés
+- **API REST** pour l'intégration mobile
+
+### ✅ Système de commandes
+- **Panier d'achat** avec session
+- **Processus de commande** complet
+- **Gestion des paiements** (structure prête)
+- **Historique des commandes**
+
+### ✅ Interface utilisateur
+- **Design moderne** avec Bootstrap 5
+- **Responsive** pour tous les appareils
+- **Navigation intuitive** avec menu utilisateur
+- **Tableau de bord** avec statistiques
+
+## 📋 Prérequis
+
+- PHP 8.1 ou supérieur
+- Composer
+- MySQL/MariaDB
+- Node.js (pour les assets)
+
+## 🛠️ Installation
+
+1. **Cloner le projet :**
+   ```bash
+   git clone <repository-url>
+   cd ecommerce-laravel
+   ```
+
+2. **Installer les dépendances :**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configuration :**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configurer la base de données dans `.env` :**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=ecommerce_laravel
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+5. **Exécuter les migrations et seeders :**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+6. **Démarrer le serveur :**
+   ```bash
+   php artisan serve
+   ```
+
+## 👥 Utilisateurs de test
+
+Après avoir exécuté les seeders, vous pouvez vous connecter avec :
+
+- **Admin :** `admin@example.com` / `password123`
+- **Client 1 :** `john@example.com` / `password123`
+- **Client 2 :** `jane@example.com` / `password123`
+
+## 🌐 Routes principales
+
+### Interface web
+- `/` - Page d'accueil
+- `/login` - Connexion
+- `/register` - Inscription
+- `/dashboard` - Tableau de bord (protégé)
+- `/profile` - Profil utilisateur (protégé)
+- `/change-password` - Changer le mot de passe (protégé)
+
+### API REST
+- `GET /api/v1/categories` - Lister les catégories
+- `GET /api/v1/products` - Lister les produits
+- `POST /api/v1/auth/register` - Inscription API
+- `POST /api/v1/auth/login` - Connexion API
+- `GET /api/v1/auth/user` - Profil utilisateur (protégé)
+
+## 📚 Documentation
+
+- [Documentation API principale](API_DOCUMENTATION.md)
+- [Documentation API Authentification](AUTH_API_DOCUMENTATION.md)
+
+## 🔧 Structure du projet
+
+```
+app/
+├── Http/Controllers/
+│   ├── Auth/AuthController.php     # Contrôleur d'authentification web
+│   ├── Api/AuthController.php      # Contrôleur d'authentification API
+│   ├── Api/CategoryController.php  # Contrôleur API catégories
+│   ├── Api/ProductController.php   # Contrôleur API produits
+│   └── ...
+├── Models/
+│   ├── User.php                    # Modèle utilisateur
+│   ├── Product.php                 # Modèle produit
+│   ├── Category.php                # Modèle catégorie
+│   ├── Order.php                   # Modèle commande
+│   └── ...
+└── ...
+
+resources/views/
+├── auth/
+│   ├── login.blade.php             # Page de connexion
+│   ├── register.blade.php          # Page d'inscription
+│   ├── dashboard.blade.php         # Tableau de bord
+│   ├── profile.blade.php           # Profil utilisateur
+│   └── change-password.blade.php   # Changement de mot de passe
+└── ...
+
+routes/
+├── web.php                         # Routes web
+└── api.php                         # Routes API
+```
+
+## 🚀 Prochaines étapes
+
+1. **Interface d'administration** pour gérer les produits/catégories
+2. **Système de panier avancé** avec persistance
+3. **Processus de commande** complet avec paiement
+4. **Notifications email** pour les commandes
+5. **Système de reviews** et notes
+6. **Gestion des stocks** en temps réel
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! N'hésitez pas à :
+
+1. Fork le projet
+2. Créer une branche pour votre fonctionnalité
+3. Commiter vos changements
+4. Pousser vers la branche
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
 
 ## About Laravel
 
