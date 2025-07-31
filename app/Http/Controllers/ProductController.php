@@ -12,11 +12,25 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $products = Product::with('category')->active()->latest()->paginate(12);
-        return view('products.index', compact('products'));
+   public function index(Request $request)
+{
+    $query = Product::query()->with('category')->where('is_active', true);
+
+    // Recherche par mot-clé
+    if ($request->filled('q')) {
+        $query->where('name', 'like', '%' . $request->q . '%');
     }
+
+    // Filtrage par catégorie
+    if ($request->filled('category')) {
+        $query->where('category_id', $request->category);
+    }
+
+    $products = $query->paginate(12);
+    $categories = \App\Models\Category::where('is_active', true)->get();
+
+    return view('products.index', compact('products', 'categories'));
+}
 
     /**
      * Show the form for creating a new resource.

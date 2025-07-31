@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,3 +32,25 @@ Route::get('/', function () {
 Route::get('/api/documentation', function () {
     return view('api-documentation');
 });
+
+
+
+// Afficher le panier
+Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+
+// Ajouter au panier
+Route::post('/panier/ajouter/{product}', [CartController::class, 'add'])->name('cart.add');
+
+// Supprimer un produit du panier
+Route::post('/panier/supprimer/{product}', [CartController::class, 'remove'])->name('cart.remove');
+
+// Modifier la quantité
+Route::post('/panier/modifier/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::get('/', [ProductController::class, 'index'])->name('products.index');
+Route::get('/produits', [ProductController::class, 'index']); // alias
+Route::get('/produits/{product}', [ProductController::class, 'show'])->name('products.show');
+
+
+
+Route::get('/commande', [OrderController::class, 'checkout'])->name('order.checkout');
+Route::post('/commande', [OrderController::class, 'process'])->name('order.process');

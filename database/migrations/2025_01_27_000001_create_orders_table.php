@@ -9,32 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('order_number')->unique();
-            $table->decimal('total_amount', 10, 2);
-            $table->enum('status', ['pending', 'paid', 'shipped', 'delivered', 'cancelled'])->default('pending');
-            $table->text('shipping_address');
-            $table->text('billing_address');
-            $table->string('shipping_method')->nullable();
-            $table->decimal('shipping_cost', 8, 2)->default(0);
-            $table->decimal('tax_amount', 8, 2)->default(0);
-            $table->text('notes')->nullable();
-            $table->timestamp('paid_at')->nullable();
-            $table->timestamp('shipped_at')->nullable();
-            $table->timestamp('delivered_at')->nullable();
-            $table->timestamps();
-        });
-    }
+  public function up()
+{
+    Schema::table('orders', function (Blueprint $table) {
+        // Pour PostgreSQL, il faut d'abord supprimer la contrainte de clé étrangère si elle existe
+        $table->dropForeign(['user_id']);
+        $table->unsignedBigInteger('user_id')->nullable()->change();
+        // Puis éventuellement la recréer
+        $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+    });
+}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('orders');
-    }
-}; 
+public function down()
+{
+    Schema::table('orders', function (Blueprint $table) {
+        $table->dropForeign(['user_id']);
+        $table->unsignedBigInteger('user_id')->nullable(false)->change();
+        $table->foreign('user_id')->references('id')->on('users');
+    });
+}
+}
