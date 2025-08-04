@@ -42,7 +42,7 @@
                                                    class="form-control @error('name') is-invalid @enderror" 
                                                    id="name" name="name" 
                                                    placeholder="Nom complet" 
-                                                   value="{{ old('name', auth()->user()->name ?? '') }}" 
+                                                   value="{{ old('name', $user->name ?? '') }}" 
                                                    required>
                                             <label for="name">
                                                 <i class="fas fa-user me-2"></i>Nom complet
@@ -55,7 +55,7 @@
                                                    class="form-control @error('email') is-invalid @enderror" 
                                                    id="email" name="email" 
                                                    placeholder="Email" 
-                                                   value="{{ old('email', auth()->user()->email ?? '') }}" 
+                                                   value="{{ old('email', $user->email ?? '') }}" 
                                                    required>
                                             <label for="email">
                                                 <i class="fas fa-envelope me-2"></i>Adresse email
@@ -69,7 +69,7 @@
                                            class="form-control @error('phone') is-invalid @enderror" 
                                            id="phone" name="phone" 
                                            placeholder="Téléphone" 
-                                           value="{{ old('phone', auth()->user()->phone ?? '') }}">
+                                           value="{{ old('phone', $user->phone ?? '') }}">
                                     <label for="phone">
                                         <i class="fas fa-phone me-2"></i>Téléphone (optionnel)
                                     </label>
@@ -88,7 +88,7 @@
                                               id="address" name="address" 
                                               placeholder="Adresse complète" 
                                               style="height: 100px" 
-                                              required>{{ old('address', auth()->user()->shipping_address ?? '') }}</textarea>
+                                              required>{{ old('address', $user->shipping_address ?? '') }}</textarea>
                                     <label for="address">
                                         <i class="fas fa-home me-2"></i>Adresse complète de livraison
                                     </label>

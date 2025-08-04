@@ -60,6 +60,8 @@ class OrderItem extends Model
     {
         parent::boot();
 
+        // Temporairement désactivé pour éviter les conflits
+        /*
         static::creating(function ($item) {
             if (empty($item->product_name) && $item->product) {
                 $item->product_name = $item->product->name;
@@ -69,5 +71,6 @@ class OrderItem extends Model
             }
             $item->calculateTotal();
         });
+        */
     }
 } 

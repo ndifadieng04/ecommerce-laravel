@@ -95,6 +95,12 @@
                                 <li><a class="dropdown-item" href="{{ route('profile') }}">
                                     <i class="fas fa-user-edit me-2"></i>Mon profil
                                 </a></li>
+                                @if(Auth::user()->is_admin)
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ route('session.selector') }}">
+                                        <i class="fas fa-exchange-alt me-2"></i>Changer de session
+                                    </a></li>
+                                @endif
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
@@ -135,6 +141,13 @@
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
             <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+    
+    @if(session('info'))
+        <div class="alert alert-info alert-dismissible fade show m-3" role="alert">
+            <i class="fas fa-info-circle me-2"></i>{{ session('info') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif

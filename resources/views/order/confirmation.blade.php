@@ -110,10 +110,10 @@
                                                     <span class="badge bg-secondary">{{ $item->quantity }}</span>
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    {{ number_format($item->price, 2, ',', ' ') }} €
+                                                    {{ number_format($item->unit_price, 2, ',', ' ') }} €
                                                 </td>
                                                 <td class="align-middle text-center fw-bold">
-                                                    {{ number_format($item->total, 2, ',', ' ') }} €
+                                                    {{ number_format($item->total_price, 2, ',', ' ') }} €
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -133,7 +133,7 @@
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Sous-total :</span>
-                                        <span class="fw-semibold">{{ number_format($order->subtotal, 2, ',', ' ') }} €</span>
+                                        <span class="fw-semibold">{{ number_format($order->items->sum('total_price'), 2, ',', ' ') }} €</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Livraison :</span>
@@ -142,7 +142,7 @@
                                     <hr>
                                     <div class="d-flex justify-content-between mb-0">
                                         <span class="h5 mb-0">Total :</span>
-                                        <span class="h5 mb-0 fw-bold" style="color: #667eea;">{{ number_format($order->total, 2, ',', ' ') }} €</span>
+                                        <span class="h5 mb-0 fw-bold" style="color: #667eea;">{{ number_format($order->total_amount, 2, ',', ' ') }} €</span>
                                     </div>
                                 </div>
                             </div>
@@ -170,11 +170,19 @@
                         <a href="{{ route('products.index') }}" class="btn btn-outline-primary" style="border-radius: 25px;">
                             <i class="fas fa-shopping-bag me-2"></i>Continuer les achats
                         </a>
-                        @auth
-                            <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 25px;">
-                                <i class="fas fa-eye me-2"></i>Voir les détails
-                            </a>
-                        @endauth
+                        <div class="d-flex gap-2">
+                            @auth
+                                <a href="{{ route('orders.invoice.download', $order->id) }}" class="btn btn-success" style="border-radius: 25px;">
+                                    <i class="fas fa-download me-2"></i>Télécharger facture
+                                </a>
+                                <a href="{{ route('orders.invoice.view', $order->id) }}" class="btn btn-info" target="_blank" style="border-radius: 25px;">
+                                    <i class="fas fa-eye me-2"></i>Voir facture
+                                </a>
+                                <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 25px;">
+                                    <i class="fas fa-eye me-2"></i>Voir les détails
+                                </a>
+                            @endauth
+                        </div>
                     </div>
                 </div>
             </div>

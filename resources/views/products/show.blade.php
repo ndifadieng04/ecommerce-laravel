@@ -27,17 +27,10 @@
     <div class="col-lg-6 mb-4">
         <div class="card shadow-sm">
             <div class="card-body p-0">
-                @if($product->image)
-                    <img src="{{ asset('storage/' . $product->image) }}" 
-                         class="img-fluid w-100" 
-                         style="max-height: 500px; object-fit: cover;"
-                         alt="{{ $product->name }}">
-                @else
-                    <div class="bg-light d-flex align-items-center justify-content-center" 
-                         style="height: 400px;">
-                        <i class="fas fa-image fa-5x text-muted"></i>
-                    </div>
-                @endif
+                <img src="{{ $product->image_url }}" 
+                     class="img-fluid w-100" 
+                     style="max-height: 500px; object-fit: cover;"
+                     alt="{{ $product->name }}">
             </div>
         </div>
     </div>

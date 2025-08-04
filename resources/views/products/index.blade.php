@@ -78,15 +78,9 @@
                 <div class="card product-card h-100 shadow-sm">
                     <!-- Image du produit -->
                     <div class="position-relative">
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
-                                 class="card-img-top product-image" 
-                                 alt="{{ $product->name }}">
-                        @else
-                            <div class="card-img-top product-image bg-light d-flex align-items-center justify-content-center">
-                                <i class="fas fa-image fa-3x text-muted"></i>
-                            </div>
-                        @endif
+                        <img src="{{ $product->image_url }}" 
+                             class="card-img-top product-image" 
+                             alt="{{ $product->name }}">
                         
                         <!-- Badge de disponibilité -->
                         <div class="position-absolute top-0 end-0 m-2">

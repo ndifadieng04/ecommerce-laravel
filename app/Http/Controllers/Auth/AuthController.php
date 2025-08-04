@@ -15,6 +15,15 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check()) {
+            // Si l'utilisateur connecté est admin, on le déconnecte pour permettre la connexion client
+            if (Auth::user()->is_admin) {
+                Auth::logout();
+                request()->session()->invalidate();
+                request()->session()->regenerateToken();
+                
+                return redirect()->route('login')
+                    ->with('info', 'Session administrateur fermée. Vous pouvez maintenant vous connecter en tant que client.');
+            }
             return redirect()->route('dashboard');
         }
         return view('auth.login');
@@ -90,7 +99,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')
+        return redirect()->route('products.index')
             ->with('success', 'Vous avez été déconnecté avec succès.');
     }
 

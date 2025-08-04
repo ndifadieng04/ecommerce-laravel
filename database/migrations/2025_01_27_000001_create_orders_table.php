@@ -6,26 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-  public function up()
-{
-    Schema::table('orders', function (Blueprint $table) {
-        // Pour PostgreSQL, il faut d'abord supprimer la contrainte de clé étrangère si elle existe
-        $table->dropForeign(['user_id']);
-        $table->unsignedBigInteger('user_id')->nullable()->change();
-        // Puis éventuellement la recréer
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-    });
-}
+    public function up(): void
+    {
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('order_number')->unique();
+            $table->string('status')->default('pending');
+            $table->decimal('total_amount', 10, 2);
+            $table->string('name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('shipping_address');
+            $table->string('billing_address')->nullable();
+            $table->string('shipping_method')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->decimal('shipping_cost', 10, 2)->default(0);
+            $table->decimal('tax_amount', 10, 2)->default(0);
+            $table->string('notes')->nullable();
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('shipped_at')->nullable();
+            $table->timestamp('delivered_at')->nullable();
+            $table->timestamps();
+        });
+    }
 
-public function down()
-{
-    Schema::table('orders', function (Blueprint $table) {
-        $table->dropForeign(['user_id']);
-        $table->unsignedBigInteger('user_id')->nullable(false)->change();
-        $table->foreign('user_id')->references('id')->on('users');
-    });
-}
-}
+    public function down(): void
+    {
+        Schema::dropIfExists('orders');
+    }
+};

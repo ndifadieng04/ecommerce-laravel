@@ -32,13 +32,19 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    // Relation avec les éléments de commande
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     // Accesseur pour l'URL de l'image
     public function getImageUrlAttribute()
     {
         if ($this->image) {
             return asset('storage/' . $this->image);
         }
-        return asset('images/default-product.jpg');
+        return asset('images/default-product.svg');
     }
 
     // Accesseur pour le prix formaté

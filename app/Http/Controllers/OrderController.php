@@ -13,16 +13,32 @@ class OrderController extends Controller
     public function checkout()
     {
         $cart = session('cart', []);
+        
+        // Debug: afficher le contenu du panier
+        \Log::info('Contenu du panier:', $cart);
+        
         if (empty($cart)) {
+            \Log::info('Panier vide, redirection vers cart.index');
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
-        return view('order.checkout', compact('cart'));
+        
+        // Récupérer les données utilisateur si connecté
+        $user = auth()->user();
+        
+        \Log::info('Affichage de la page checkout');
+        return view('order.checkout', compact('cart', 'user'));
     }
 
     public function process(Request $request)
     {
+        \Log::info('Méthode process appelée');
+        \Log::info('Données reçues:', $request->all());
+        
         $cart = session('cart', []);
+        \Log::info('Contenu du panier dans process:', $cart);
+        
         if (empty($cart)) {
+            \Log::info('Panier vide dans process, redirection');
             return redirect()->route('cart.index')->with('error', 'Votre panier est vide.');
         }
 
@@ -40,42 +56,56 @@ class OrderController extends Controller
         try {
             // Calcul du total
             $total = collect($cart)->sum(function($item) {
-                return $item['price'] * $item['quantity'];
+                return (float) $item['price'] * $item['quantity'];
             });
 
             // Création de la commande
+            \Log::info('Création de la commande avec total: ' . $total);
             $order = Order::create([
                 'user_id' => auth()->check() ? auth()->id() : null,
                 'order_number' => 'ORD-' . date('Ymd') . '-' . strtoupper(uniqid()),
+                'total_amount' => $total,
+                'status' => 'pending',
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
-                'shipping_address' => $validated['address'],
-                'city' => $validated['city'],
-                'postal_code' => $validated['postal_code'],
-                'payment_method' => $validated['payment'],
-                'status' => $validated['payment'] == 'online' ? 'en attente de paiement' : 'en attente',
-                'total' => $total,
-                'subtotal' => $total,
+                'shipping_address' => $validated['address'] . ', ' . $validated['city'] . ' ' . $validated['postal_code'],
+                'billing_address' => $validated['address'] . ', ' . $validated['city'] . ' ' . $validated['postal_code'],
+                'shipping_method' => 'standard',
                 'shipping_cost' => 0, // Livraison gratuite
+                'tax_amount' => 0,
                 'notes' => null,
             ]);
+            \Log::info('Commande créée avec ID: ' . $order->id);
 
             // Ajout des produits à la commande
+            \Log::info('Création des OrderItem pour la commande ' . $order->id);
             foreach ($cart as $item) {
-                OrderItem::create([
+                try {
+                                    $unitPrice = (float) $item['price'];
+                $totalPrice = $unitPrice * $item['quantity'];
+                
+                \Log::info('Création OrderItem avec prix: unit_price=' . $unitPrice . ', total_price=' . $totalPrice);
+                
+                $orderItem = OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['id'],
                     'product_name' => $item['name'],
                     'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'total' => $item['price'] * $item['quantity'],
+                    'unit_price' => $unitPrice,
+                    'total_price' => $totalPrice,
                 ]);
+                    \Log::info('OrderItem créé avec ID: ' . $orderItem->id);
 
-                // Mise à jour du stock du produit
-                $product = \App\Models\Product::find($item['id']);
-                if ($product) {
-                    $product->decrement('stock', $item['quantity']);
+                    // Mise à jour du stock du produit
+                    $product = \App\Models\Product::find($item['id']);
+                    if ($product) {
+                        $product->decrement('stock', $item['quantity']);
+                        \Log::info('Stock mis à jour pour le produit ' . $product->id);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Erreur lors de la création de OrderItem: ' . $e->getMessage());
+                    throw $e;
                 }
             }
 
@@ -102,6 +132,8 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('Erreur lors de la création de commande: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
             return back()->with('error', 'Une erreur est survenue lors du traitement de votre commande. Veuillez réessayer.');
         }
     }
@@ -146,4 +178,29 @@ public function show($orderId)
 
     return view('order.show', compact('order'));
 }
+
+    // Gestion des factures pour les clients
+    public function downloadInvoice(Order $order)
+    {
+        // Vérifier que l'utilisateur connecté est propriétaire de la commande
+        if (auth()->id() !== $order->user_id) {
+            abort(403, 'Accès non autorisé');
+        }
+        
+        $invoiceService = new \App\Services\InvoiceService();
+        
+        return $invoiceService->downloadInvoice($order);
+    }
+
+    public function viewInvoice(Order $order)
+    {
+        // Vérifier que l'utilisateur connecté est propriétaire de la commande
+        if (auth()->id() !== $order->user_id) {
+            abort(403, 'Accès non autorisé');
+        }
+        
+        $invoiceService = new \App\Services\InvoiceService();
+        
+        return $invoiceService->streamInvoice($order);
+    }
 }
